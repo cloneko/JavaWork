@@ -55,7 +55,7 @@ class ProductManager{
 	function Reload(){
 		return $this->DataLoader($this->FilePath);
 	}
-/*
+
 /**
 * Rollback   
 *
