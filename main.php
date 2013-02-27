@@ -64,27 +64,30 @@ function main(){
 
 function view($obj){
 
+	$Labels = $obj->getLabels();
+	$Products = $obj->getProducts();
+
 	$length = array();
 	// Initialize
-	foreach($obj->Labels as $label){ 
+	foreach($Labels as $label){ 
 		$length[$label] = mb_strlen($label);
 	}
 
-	foreach($obj->Products as $key => $product){
-		foreach($obj->Labels as $label){
+	foreach($Products as $key => $product){
+		foreach($Labels as $label){
 			$length[$label] = strlen($product[$label]) > $length[$label] ? mb_strlen($product[$label]) : $length[$label];
 			
 		} 
 	}
 
-	foreach($obj->Labels as $label){ 
+	foreach($Labels as $label){ 
 		$length[$label] += ($length[$label] % 2 == 1 ? 2 : 3);
 	}
 
 	$maxlength = 0;
 
 	$first = true;
-	foreach($obj->Labels as $label){
+	foreach($Labels as $label){
 		$maxlength += $length[$label];	
 		if($first){
 			print str_pad($label,$length[$label],' ',STR_PAD_BOTH);
@@ -103,9 +106,9 @@ function view($obj){
 	
 	// Main Output
 
-	foreach($obj->Products as $product){
+	foreach($Products as $product){
 		$first = true;
-		foreach($obj->Labels as $label){
+		foreach($Labels as $label){
 			if($first){
 				print str_pad($product[$label],$length[$label],' ',STR_PAD_RIGHT);
 				$first = false;
@@ -119,15 +122,17 @@ function view($obj){
 	
 
 function add($obj){ 
-	print ($obj->Labels[0] .'を入力してください:');
+	$Labels = $obj->getLabels();
+	$Products = $obj->getProducts();
+	print ($Labels[0] .'を入力してください:');
 	$key = rtrim(fgets(STDIN,1024));
 
-	if(array_key_exists($key,$obj->Products)){
-		print 'その'.$obj->Labels[0].'は存在しています'."\n";
+	if(array_key_exists($key,$Products)){
+		print 'その'.$Labels[0].'は存在しています'."\n";
 	} else {
 		$data = array();
-		foreach($obj->Labels as $label){
-			if($label === $obj->Labels[0]){
+		foreach($Labels as $label){
+			if($label === $Labels[0]){
 				$data[$label] = $key;
 				continue;
 			} else {
@@ -143,22 +148,24 @@ function add($obj){
 }
 
 function update($obj){ 
-	print ('更新したい商品の'.$obj->Labels[0] .'を入力してください:');
+	$Labels = $obj->getLabels();
+	$Products = $obj->getProducts();
+	print ('更新したい商品の'.$Labels[0] .'を入力してください:');
 	$key = rtrim(fgets(STDIN,1024));
 
-	if(!array_key_exists($key,$obj->Products)){
-		print 'その'.$obj->Labels[0].'は存在していません'."\n";
+	if(!array_key_exists($key,$obj->getProducts())){
+		print 'その'.$Labels[0].'は存在していません'."\n";
 	} else {
 		print '更新したい項目のみ入力してください。現在の項目はかっこの中に表示されています'."\n";
 		$data = array();
-		foreach($obj->Labels as $label){
-			if($label === $obj->Labels[0]){
+		foreach($Labels as $label){
+			if($label === $Labels[0]){
 				$data[$label] = $key;
 				continue;
 			} else {
-				print ($label .'を入力してください(現在の値:'.$obj->Products[$key][$label].'):');
+				print ($label .'を入力してください(現在の値:'.$Products[$key][$label].'):');
 				$input = rtrim(fgets(STDIN,1024));
-				$data[$label] = $input === '' ? $obj->Products[$key][$label] : $input; 
+				$data[$label] = $input === '' ? $Products[$key][$label] : $input; 
 			}
 		}
 		if($obj->UpdateProduct($data)){
@@ -169,11 +176,14 @@ function update($obj){
 }
 
 function delete($obj){ 
-	print ('削除したい商品の'.$obj->Labels[0] .'を入力してください:');
+	$Labels = $obj->getLabels();
+	$Products = $obj->getProducts();
+
+	print ('削除したい商品の'.$Labels[0] .'を入力してください:');
 	$key = rtrim(fgets(STDIN,1024));
 
-	if(!array_key_exists($key,$obj->Products)){
-		print 'その'.$obj->Labels[0].'は存在していません'."\n";
+	if(!array_key_exists($key,$Products)){
+		print 'その'.$Labels[0].'は存在していません'."\n";
 	} else {
 		if($obj->DeleteProduct($key)){
 			print '商品を削除しました'."\n";

@@ -11,10 +11,10 @@
 class ProductManager{
 
 	// Global Variables
-	var $Products = array(); // Products Store
-	var $Labels = array(); // Labels(Products Table)
-	var $FilePath = null; // Database FilePath
-	var $Buffer = null; // Buffer(for Rollback)
+	protected $Products = array(); // Products Store
+	protected $Labels = array(); // Labels(Products Table)
+	protected $FilePath = null; // Database FilePath
+	private $Buffer = null; // Buffer(for Rollback)
 
 /**
 * Constructor  
@@ -44,6 +44,26 @@ class ProductManager{
 		$this->DataWriter();
 		// Reload Data ...
 		$this->reload();
+	}
+
+/**
+* getLabels   
+*
+* @return array Label;
+*/
+
+	function getLabels(){
+		return $this->Labels;
+	}
+
+/**
+* getProducts   
+*
+* @return array Products;
+*/
+
+	function getProducts(){
+		return $this->Products;
 	}
 
 /**
