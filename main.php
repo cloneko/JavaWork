@@ -13,6 +13,7 @@ function main(){
 	print "\n";
 	print '9) 保存する' . "\n";
 	print '0) 保存する前の状態に戻す' . "\n";
+	print 'r) CSVデータの再読み込み' . "\n";
 	print 'x) 保存して終了' . "\n";
 	print 'q) 終了' . "\n";
 	print "\n";
@@ -41,6 +42,10 @@ function main(){
 		case '0':
 			$obj->Rollback();
 			print "最終保存時に戻しました\n";
+			break;
+		case 'r':
+			$obj->Reload();
+			print "CSVデータを再読み込みしました\n";
 			break;
 		case 'x':
 			$obj->Commit();
