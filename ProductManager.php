@@ -14,7 +14,7 @@ class ProductManager{
 	protected $Products = array(); // Products Store
 	protected $Labels = array(); // Labels(Products Table)
 	protected $FilePath = null; // Database FilePath
-	private $Buffer = null; // Buffer(for Rollback)
+	protected $Buffer = null; // Buffer(for Rollback)
 
 /**
 * Constructor  
@@ -27,7 +27,7 @@ class ProductManager{
 			$this->DataLoader($filepath);
 			$this->FilePath = $filepath;
 		} else {
-			throw new Exception('ProductManager Class Require filepath');
+			throw new ErrorException('ProductManager Class Require filepath');
 		}
 		return true;
 
