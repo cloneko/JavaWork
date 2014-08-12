@@ -1,3 +1,5 @@
 ProductId,Name,Price,Stock
 00001,TV,5000,2
-200000,hoge,1000,3
+200000,hoge,1000,10
+2,hoge,200,50
+12345,あうあう,100,

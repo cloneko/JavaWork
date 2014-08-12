@@ -158,6 +158,17 @@ class ProductManager{
 	}
 
 /**
+* GetProduct / Get Product from Products Object
+*
+* @param string ProductId
+* @return array Product Object;
+*/
+
+	function getProduct($id = ''){
+		return isset($this->Products[$id]) ? $this->Products[$id] : false;
+	}
+
+/**
 * DeleteProduct / Delete Product from Product Object
 *
 * @param string ProductId
