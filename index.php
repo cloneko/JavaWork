@@ -1,10 +1,30 @@
 <?php
-require_once('ProductManager.php');
+error_reporting(E_ALL);
+require_once('lib/ProductManager.php'); 
+$pdct = new ProductManager('lib/Product.csv');
 
-$pdct = new ProductManager('Product.csv');
+require_once('lib/Smarty/libs/Smarty.class.php'); 
+
+$smarty = new Smarty();
+
+$obj = array();
+
 
 if(!empty($_POST)){
-	if(isset($_POST['append'])){
+
+	if(isset($_POST['delete'])){
+		try{
+			$buf = $pdct->getProduct($_POST['ProductId']);
+			$pdct->DeleteProduct($_POST['ProductId']);
+			$pdct->Commit();
+			$pdct->Reload();
+			$obj['msg'] = sprintf('商品ID: %sの商品(%s)を削除しました。',$buf['ProductId'],$buf['Name']);
+
+		} catch(Exception $e) {
+			$obj['msg'] = sprintf('その商品ID(%s)は存在してないです…。',$_POST['ProductId']);
+		}
+
+	}elseif(isset($_POST['append'])){
 		try{
 			$pdct->AddProduct([
 				'ProductId' => $_POST['ProductId'],
@@ -13,10 +33,11 @@ if(!empty($_POST)){
 				'Stock' => $_POST['Stock'] 
 			]);
 			$pdct->Commit();
-			$pdct->Reload();
+			$obj['msg'] = sprintf('商品ID: %sの商品(%s)を追加しました',$_POST['ProductId'],$_POST['Name']);
 		} catch(Exception $e) {
-			printf('既にその商品ID(%s)は存在してます。',$_POST['ProductId']);
+			$obj['msg'] = sprintf('既にその商品ID(%s)は存在してます。',$_POST['ProductId']);
 		}
+
 	} elseif(isset($_POST['update'])){
 		try{
 			$pdct->updateProduct([
@@ -27,8 +48,9 @@ if(!empty($_POST)){
 			]);
 			$pdct->Commit();
 			$pdct->Reload();
+			$obj['msg'] = sprintf('商品ID: %sの商品(%s)を更新しました',$_POST['ProductId'],$_POST['Name']);
 		} catch(Exception $e) {
-			printf('その商品ID(%s)は多分存在してません。',$_POST['ProductId']);
+			$obj['msg'] = sprintf('その商品ID(%s)は多分存在してません。',$_POST['ProductId']);
 		}
 
 	} 
@@ -37,16 +59,7 @@ if(!empty($_POST)){
 		try{
 			$p = $pdct->getProduct($_GET['id']);
 			if($p){
-			print <<<END
-				<form action="" method="POST">
-		<input type="hidden" name="update">
-		<label>商品ID</label><input type="text" name="ProductId" value="{$p['ProductId']}" readonly="readonly">
-		<label>商品名</label><input type="text" name="Name" value="{$p['Name']}">
-		<label>価格</label><input type="text" name="Price" value="{$p['Price']}">
-		<label>在庫</label><input type="text" name="Stock" value="{$p['Stock']}">
-		<input type="submit" value="更新!!">
-		</form>
-END;
+				$obj['current'] = $p;
 			} else {
 				throw new ErrorException('Invalid ProductId');
 			}
@@ -55,25 +68,11 @@ END;
 
 	}
 
-?>
 
-<table>
-<?
-printf("<tr><th></th><th>%s<th><th>%s</th><th>%s</th></tr>",'Name','Price','Stock');
+	$pdct->reload();
+	$obj['products'] = $pdct->getProducts();
 
-foreach ($pdct->getProducts() as $key => $value){
-	printf("<tr><td><a href=\"?id=%s\">%s</a></td><td>%s<td><td>%s</td><td>%s</td></tr>",$value['ProductId'],$value['ProductId'],$value['Name'],$value['Price'],$value['Stock']);
-} 
+	$smarty->assign($obj);
+	$smarty->display('template/index.tpl');
 
 ?>
-</table>
-
-<h2>新商品</h2>
-<form action="" method="POST">
-<input type="hidden" name="append">
-<label>商品ID</label><input type="text" name="ProductId" >
-<label>商品名</label><input type="text" name="Name" >
-<label>価格</label><input type="text" name="Price" >
-<label>在庫</label><input type="text" name="Stock" > 
-<input type="submit" value="追加!!">
-</form>

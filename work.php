@@ -1,6 +1,6 @@
 <?php
 
-require_once('main.php'); 
+require_once('cui.php'); 
 main(); 
 
 ?>

@@ -1,8 +1,8 @@
 <?php
-require_once('ProductManager.php');
+require_once('lib/ProductManager.php');
 
 function main(){
-	$obj = new ProductManager('Product.csv');
+	$obj = new ProductManager('lib/Product.csv');
 
 	top:
 	print '-------------------------------------------------' . "\n";
