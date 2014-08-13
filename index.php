@@ -6,6 +6,7 @@ $pdct = new ProductManager('lib/Product.csv');
 require_once('lib/Smarty/libs/Smarty.class.php'); 
 
 $smarty = new Smarty();
+$smarty->default_modifiers = array('escape:html','nl2br');
 
 $obj = array();
 
